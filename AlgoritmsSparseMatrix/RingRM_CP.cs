@@ -27,6 +27,7 @@ namespace AlgoritmsSparseMatrix
                     if (arr[i, j] != 0)
                     {
                         temp++;
+                        ;
                     }
                 }
             }
