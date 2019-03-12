@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Laba3_SparseMatrix", "Laba3_Sparse_Matrix\Laba3_SparseMatrix.csproj", "{776C0D36-D04D-4FF6-A072-3043CB6CB43F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoritmsSparseMatrix", "AlgoritmsSparseMatrix\AlgoritmsSparseMatrix.csproj", "{754AFB2C-ABE2-48F2-A297-E7A481D9C15C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{776C0D36-D04D-4FF6-A072-3043CB6CB43F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{776C0D36-D04D-4FF6-A072-3043CB6CB43F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{776C0D36-D04D-4FF6-A072-3043CB6CB43F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{776C0D36-D04D-4FF6-A072-3043CB6CB43F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{754AFB2C-ABE2-48F2-A297-E7A481D9C15C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754AFB2C-ABE2-48F2-A297-E7A481D9C15C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754AFB2C-ABE2-48F2-A297-E7A481D9C15C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754AFB2C-ABE2-48F2-A297-E7A481D9C15C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CC70F8C9-8330-4E22-84E4-CD080F181AC1}
+	EndGlobalSection
+EndGlobal
