@@ -8,12 +8,12 @@ namespace AlgoritmsSparseMatrix
 {
     public class RingRM_CP
     {
-        int[] AN;
-        int[] NR;
-        int[] NC;
+        public int[] AN;
+        public int[] NR;
+        public int[] NC;
 
-        int[] JR;
-        int[] JC;
+        public int[] JR;
+        public int[] JC;
 
         public RingRM_CP(int[,] arr)
         {
@@ -55,8 +55,7 @@ namespace AlgoritmsSparseMatrix
 
         }
 
-
-
+        
         private void Init(int[,] arr)
         {
             int counter = 0; // счетчик
@@ -127,16 +126,40 @@ namespace AlgoritmsSparseMatrix
 
         }
 
+        public RingRM_CP Multiplication(RingRM_CP ring)
+        {
+            RingRM_CP temp;
+
+            if(this.JC.Length != ring.JR.Length)
+            {
+                throw new Exception();
+            }
+
+            int buf = 0;
+            for(int i = 0; i < this.JR.Length; i++)
+            {
+                for(int j = 0; j < this.AN.Length; j++)
+                {
+                    for(int k = 0; k < )
+                }
+            }
+
+
+        }
+
+
 
 
         public void Print()
         {
+            string temp = "{0, 5}";
+
             Console.Write("\n");
             //вывод в консоль массива AN
             Console.Write("AN: ");
             for (int i = 0; i < AN.Length; i++)
             {
-                Console.Write("{0} ", AN[i]);
+                Console.Write(temp, AN[i]);
             }
             Console.Write("\n");
 
@@ -144,7 +167,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("NR: ");
             for (int i = 0; i < NR.Length; i++)
             {
-                Console.Write("{0} ", NR[i]);
+                Console.Write(temp, NR[i]);
             }
             Console.Write("\n");
 
@@ -152,7 +175,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("NC: ");
             for (int i = 0; i < NC.Length; i++)
             {
-                Console.Write("{0} ", NC[i]);
+                Console.Write(temp, NC[i]);
             }
             Console.Write("\n");
 
@@ -160,7 +183,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("JR: ");
             for (int i = 0; i < JR.Length; i++)
             {
-                Console.Write("{0} ", JR[i]);
+                Console.Write(temp, JR[i]);
             }
             Console.Write("\n");
 
@@ -168,7 +191,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("JC: ");
             for (int i = 0; i < JC.Length; i++)
             {
-                Console.Write("{0} ", JC[i]);
+                Console.Write(temp, JC[i]);
             }
             Console.Write("\n");
         }
