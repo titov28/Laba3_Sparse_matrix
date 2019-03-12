@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RingRM_CP.cs" />
-    <Compile Include="RingRM.cs" />
     <Compile Include="SchemeCHG.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
