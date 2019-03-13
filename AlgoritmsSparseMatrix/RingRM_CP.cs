@@ -130,23 +130,28 @@ namespace AlgoritmsSparseMatrix
         {
             RingRM_CP temp;
 
+            // проверка условия для перемножения матриц
             if(this.JC.Length != ring.JR.Length)
             {
                 throw new Exception();
             }
 
             int buf = 0;
-            for(int i = 0; i < this.JR.Length; i++)
+            for (int i = 0; i < this.JR.Length; i++)
             {
-                for(int j = 0; j < this.AN.Length; j++)
+                for(int j = 0; j < JR.Length; j++)
                 {
-                    for(int k = 0; k < )
+                    for(int k =0; k < ring.JC.Length; k++)
+                    {
+                        if () {
+                            buf += AN[NR[j]] * ring.AN[ring.NC[k]];
+                        }
+                    }
                 }
             }
 
 
         }
-
 
 
 
