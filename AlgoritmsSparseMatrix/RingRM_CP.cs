@@ -55,7 +55,7 @@ namespace AlgoritmsSparseMatrix
 
         }
 
-        
+
         private void Init(int[,] arr)
         {
             int counter = 0; // счетчик
@@ -64,7 +64,7 @@ namespace AlgoritmsSparseMatrix
 
             int[] preElementJC = new int[JC.Length];// Индексы предыдущих элементов в столбцах
 
-            for(int i =0; i < JC.Length; i++)
+            for (int i = 0; i < JC.Length; i++)
             {
                 preElementJC[i] = -1;
             }
@@ -79,7 +79,7 @@ namespace AlgoritmsSparseMatrix
                         AN[counter] = arr[i, j]; //инициализация массива AN
                         preElement = counter;
 
-                        
+
                         if (firstItemFlag)
                         {
                             JR[i] = counter; // инициализация массива JR
@@ -96,7 +96,7 @@ namespace AlgoritmsSparseMatrix
                             JC[j] = counter;
                         }
 
-                        if(preElementJC[j] != -1)
+                        if (preElementJC[j] != -1)
                         {
                             NC[preElementJC[j]] = counter;//инициализация массива NC
                         }
@@ -119,7 +119,7 @@ namespace AlgoritmsSparseMatrix
                 firstItemFlag = true;
             }
 
-            for(int i = 0; i < JC.Length; i++)// запись индексов первых элементов столбца в последние 
+            for (int i = 0; i < JC.Length; i++)// запись индексов первых элементов столбца в последние 
             {
                 NC[preElementJC[i]] = JC[i];
             }
@@ -131,20 +131,25 @@ namespace AlgoritmsSparseMatrix
             RingRM_CP temp;
 
             // проверка условия для перемножения матриц
-            if(this.JC.Length != ring.JR.Length)
+            if (this.JC.Length != ring.JR.Length)
             {
                 throw new Exception();
             }
 
+            bool firstInput = false;
+            int indexNR = -1;
+            int indexNC = -1;
+
             int buf = 0;
-            for (int i = 0; i < this.JR.Length; i++)
+            for (int i = 0; i < this.JR.Length; i++)// цикл перерохода на новую строку
             {
-                for(int j = 0; j < JR.Length; j++)
+                for (int j = 0; j < ring.JC.Length; j++)// цикл перехода на новый столбец в ring
                 {
-                    for(int k =0; k < ring.JC.Length; k++)
+                    for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбранной строке
                     {
-                        if () {
-                            buf += AN[NR[j]] * ring.AN[ring.NC[k]];
+                        for(int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбранному стобцу в ring
+                        {
+
                         }
                     }
                 }
