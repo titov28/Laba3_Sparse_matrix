@@ -136,29 +136,125 @@ namespace AlgoritmsSparseMatrix
                 throw new Exception();
             }
 
-            bool firstInput = false;
-            int indexNR = -1;
-            int indexNC = -1;
+            bool firstInputJR = true;
+            bool firstInputJC = true;
+            int indexNR = -1; // индекс строки
+            int indexNC = -1; // индекс столбца
+
+            List<int> listAN = new List<int>(); //вектор AN
+            List<int> listNR = new List<int>(); //вектор NR
+            List<int> listNC = new List<int>(); //вектор NC
+
+            int[] locJR = new int[this.JC.Length]; //вектор JR
+            int[] locJC = new int[ring.JC.Length]; //вектор JC
 
             int buf = 0;
             for (int i = 0; i < this.JR.Length; i++)// цикл перерохода на новую строку
             {
                 for (int j = 0; j < ring.JC.Length; j++)// цикл перехода на новый столбец в ring
                 {
+
+                    indexNR = JR[i];
+                    indexNC = ring.JC[j];
+
                     for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбранной строке
                     {
-                        for(int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбранному стобцу в ring
+                        for (int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбранному стобцу в ring
                         {
+                            if (getIndexColumn(indexNR) == ring.getIndexRow(indexNC)) //проерка индекса строки и стобца
+                            {
+                                buf += AN[indexNR] * ring.AN[indexNC];
+                            }
 
+                            indexNC = ring.NC[indexNC];
                         }
+
+                        if (buf != 0)
+                        {
+                            listAN.Add(buf);
+                        }
+
+                        if (!firstInputJR & buf != 0)// заполняем NR
+                        {
+                            listNR.Add(listAN.Count - 1);
+                        }
+
+                        if (firstInputJR & buf != 0) // заполняем JR 
+                        {
+                            locJR[i] = listAN.Count - 1;
+                            firstInputJR = false;
+                        }
+
+
+
+                        if (j == ring.JC.Length - 1 & listAN.Count - 1 >= 0)//последний столбец? если да, то добавляем первый элемент строки в конец NR
+                        {
+                            listNR.Add(locJR[i]);
+                        }
+
+
+
+                        indexNR = NR[indexNR];
                     }
                 }
+
+                firstInputJR = true;
             }
 
 
         }
 
+        public int getIndexRow(int indexColumn)// возвращает индекс строки по индексу столбца
+        {
+            int temp = -2;
+            for (int i = 0; i < JC.Length; i++)
+            {
+                if (temp <= 0)
+                {
+                    for (int j = 0; j < JC.Length; j++)
+                    {
+                        if (JC[j] == indexColumn)
+                        {
+                            temp = j;
+                            break;
+                        }
+                    }
+                    indexColumn = NC[indexColumn];
+                }
+                else
+                {
+                    break;
+                }
+            }
 
+            return temp;
+        }
+
+        public int getIndexColumn(int indexRow) // возвращает индекс столбца по индексу строки
+        {
+            int temp = -2;
+            for (int i = 0; i < JR.Length; i++)
+            {
+                if (temp <= 0)
+                {
+                    for (int j = 0; j < JR.Length; j++)
+                    {
+                        if (JR[j] == indexRow)
+                        {
+                            temp = j;
+                            break;
+                        }
+                    }
+                    indexRow = NR[indexRow];
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return temp;
+        }
 
         public void Print()
         {
