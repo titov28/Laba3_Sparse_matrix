@@ -131,7 +131,8 @@ namespace AlgoritmsSparseMatrix
 
             for (int i = 0; i < JC.Length; i++)// запись индексов первых элементов столбца в последние 
             {
-                NC[preElementJC[i]] = JC[i];
+                if(preElementJC[i] >= 0)
+                    NC[preElementJC[i]] = JC[i];
             }
 
         }
@@ -172,12 +173,25 @@ namespace AlgoritmsSparseMatrix
 
                 for (int j = 0; j < ring.JC.Length; j++)// цикл перехода на новый столбец в ring
                 {
-                    indexNR = this.JR[i]; // начало выббраной строки
+                    if (this.JR[i] != -1) // если попалась строка -1 , то continue
+                    {
+                        indexNR = this.JR[i]; // начало выббраной строки
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
                     for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбраной строке
                     {
-                        indexNC = ring.JC[j]; //начало выбраного столбца
-
+                        if (ring.JC[j] != -1)// если попалася столбец -1 , то continue
+                        {
+                            indexNC = ring.JC[j]; //начало выбраного столбца
+                        }
+                        else
+                        {
+                            continue;
+                        }
                         for (int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбраному стобцу в ring
                         {
                             if (getIndexColumn(indexNR) == ring.getIndexRow(indexNC)) //проерка индекса строки и стобца
@@ -186,9 +200,21 @@ namespace AlgoritmsSparseMatrix
                             }
 
                             indexNC = ring.NC[indexNC]; // следующий индекс столбца
+
+
+                            if (indexNC == ring.JC[j]) //если прошли круг - выход
+                            {
+                                break;
+                            }
+
                         }
 
                         indexNR = this.NR[indexNR]; // следующий индекс строки
+
+                        if(indexNR == this.JR[i])//если прошли круг - выход
+                        {
+                            break;
+                        }
                     }
 
                     if (buf != 0)
@@ -213,7 +239,7 @@ namespace AlgoritmsSparseMatrix
 
                         if (prelocJC[j] != -1)
                         {
-                            listNC[prelocJC[j]] = listAN.Count - 1;
+                            listNC[prelocJC[j]] = listAN.Count - 1; // заполняем NC
                         }
 
                         prelocJC[j] = listAN.Count - 1;
@@ -236,9 +262,11 @@ namespace AlgoritmsSparseMatrix
 
             for (int i = 0; i < locJC.Length; i++)
             {
-                listNC[prelocJC[i]] = locJC[i];
+                if(locJC[i] >= 0)
+                    listNC[prelocJC[i]] = locJC[i];
             }
 
+            //заполняем локальнный объект
             temp.AN = listAN.ToArray();
             temp.NR = listNR.ToArray();
             temp.NC = listNC.ToArray();
@@ -254,6 +282,19 @@ namespace AlgoritmsSparseMatrix
         {
             int temp = -2;
            
+            while(temp == -2)
+            {
+                for(int i = 0; i < JR.Length; i++)
+                {
+                    if(JR[i] == indexColumn)
+                    {
+                        temp = i;
+                        break;
+                    }
+                }
+               
+                indexColumn = NR[indexColumn];
+            }
 
             return temp;
         }
@@ -262,7 +303,18 @@ namespace AlgoritmsSparseMatrix
         {
             int temp = -2;
 
-           
+            while (temp == -2)
+            {
+                for (int i = 0; i < JC.Length; i++)
+                {
+                    if (JC[i] == indexRow)
+                    {
+                        temp = i;
+                        break;
+                    }
+                }
+                indexRow = NC[indexRow];
+            }
             return temp;
         }
 
@@ -273,12 +325,14 @@ namespace AlgoritmsSparseMatrix
 
         public void HardPrint()
         {
-            string temp = "{0, 5}";
+            string temp = "{0, 8}";
 
             int[,] locArray = new int[JR.Length, JC.Length];
 
-            int h = getIndexRow(0);
-            h = getIndexColumn(0);
+            for(int i = 0; i < AN.Length; i++)
+            {
+                locArray[getIndexRow(i), getIndexColumn(i)] = AN[i];
+            }
 
 
             Console.Write("\n");
@@ -291,6 +345,7 @@ namespace AlgoritmsSparseMatrix
                 Console.Write("\n");
             }
 
+            Console.Write("\n");
         }
 
         public void Print()
@@ -336,6 +391,7 @@ namespace AlgoritmsSparseMatrix
             {
                 Console.Write(temp, JC[i]);
             }
+            Console.Write("\n");
             Console.Write("\n");
         }
     }
