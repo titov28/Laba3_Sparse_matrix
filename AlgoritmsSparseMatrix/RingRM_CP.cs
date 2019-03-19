@@ -15,6 +15,16 @@ namespace AlgoritmsSparseMatrix
         public int[] JR;
         public int[] JC;
 
+        public RingRM_CP()
+        {
+            AN = null;
+            NR = null;
+            NC = null;
+
+            JR = null;
+            JC = null;
+        }
+
         public RingRM_CP(int[,] arr)
         {
 
@@ -128,7 +138,7 @@ namespace AlgoritmsSparseMatrix
 
         public RingRM_CP Multiplication(RingRM_CP ring)
         {
-            RingRM_CP temp;
+            RingRM_CP temp = new RingRM_CP();
 
             // проверка условия для перемножения матриц
             if (this.JC.Length != ring.JR.Length)
@@ -145,115 +155,142 @@ namespace AlgoritmsSparseMatrix
             List<int> listNR = new List<int>(); //вектор NR
             List<int> listNC = new List<int>(); //вектор NC
 
-            int[] locJR = new int[this.JC.Length]; //вектор JR
+            int[] locJR = new int[this.JR.Length]; //вектор JR
             int[] locJC = new int[ring.JC.Length]; //вектор JC
+            int[] prelocJC = new int[ring.JC.Length]; //предыдущие элементы в столбце
+
+            for (int i = 0; i < locJC.Length; i++)
+            {
+                locJC[i] = -1;
+                prelocJC[i] = -1;
+            }
 
             int buf = 0;
             for (int i = 0; i < this.JR.Length; i++)// цикл перерохода на новую строку
             {
+                firstInputJR = true;
+
                 for (int j = 0; j < ring.JC.Length; j++)// цикл перехода на новый столбец в ring
                 {
+                    indexNR = this.JR[i]; // начало выббраной строки
 
-                    indexNR = JR[i];
-                    indexNC = ring.JC[j];
-
-                    for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбранной строке
+                    for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбраной строке
                     {
-                        for (int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбранному стобцу в ring
+                        indexNC = ring.JC[j]; //начало выбраного столбца
+
+                        for (int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбраному стобцу в ring
                         {
                             if (getIndexColumn(indexNR) == ring.getIndexRow(indexNC)) //проерка индекса строки и стобца
                             {
-                                buf += AN[indexNR] * ring.AN[indexNC];
+                                buf += this.AN[indexNR] * ring.AN[indexNC];
                             }
 
-                            indexNC = ring.NC[indexNC];
+                            indexNC = ring.NC[indexNC]; // следующий индекс столбца
                         }
 
-                        if (buf != 0)
-                        {
-                            listAN.Add(buf);
-                        }
+                        indexNR = this.NR[indexNR]; // следующий индекс строки
+                    }
 
-                        if (!firstInputJR & buf != 0)// заполняем NR
-                        {
-                            listNR.Add(listAN.Count - 1);
-                        }
+                    if (buf != 0)
+                    {
+                        listAN.Add(buf);// заполнение AN
+                        listNC.Add(-1);
 
-                        if (firstInputJR & buf != 0) // заполняем JR 
+                        if (firstInputJR)
                         {
-                            locJR[i] = listAN.Count - 1;
+                            locJR[i] = listAN.Count - 1;  //Заполняем JR
                             firstInputJR = false;
                         }
-
-
-
-                        if (j == ring.JC.Length - 1 & listAN.Count - 1 >= 0)//последний столбец? если да, то добавляем первый элемент строки в конец NR
+                        else
                         {
-                            listNR.Add(locJR[i]);
+                            listNR.Add(listAN.Count - 1);//Заполняем NR
                         }
 
+                        if (locJC[j] == -1)
+                        {
+                            locJC[j] = listAN.Count - 1; // заполняем JC
+                        }
 
+                        if (prelocJC[j] != -1)
+                        {
+                            listNC[prelocJC[j]] = listAN.Count - 1;
+                        }
 
-                        indexNR = NR[indexNR];
+                        prelocJC[j] = listAN.Count - 1;
+
+                        buf = 0;
                     }
+
+
                 }
 
-                firstInputJR = true;
-            }
-
-
-        }
-
-        public int getIndexRow(int indexColumn)// возвращает индекс строки по индексу столбца
-        {
-            int temp = -2;
-            for (int i = 0; i < JC.Length; i++)
-            {
-                if (temp <= 0)
+                if (firstInputJR)
                 {
-                    for (int j = 0; j < JC.Length; j++)
-                    {
-                        if (JC[j] == indexColumn)
-                        {
-                            temp = j;
-                            break;
-                        }
-                    }
-                    indexColumn = NC[indexColumn];
+                    locJR[i] = -1; // если нет элемнтов строке
                 }
                 else
                 {
-                    break;
+                    listNR.Add(locJR[i]); // если есть , то в конец NR добавляю первый элемент строки
                 }
             }
+
+            for (int i = 0; i < locJC.Length; i++)
+            {
+                listNC[prelocJC[i]] = locJC[i];
+            }
+
+            temp.AN = listAN.ToArray();
+            temp.NR = listNR.ToArray();
+            temp.NC = listNC.ToArray();
+
+            temp.JR = locJR;
+            temp.JC = locJC;
+
+            return temp;
+
+        }
+
+        public int getIndexRow(int indexColumn)// возвращает номер строки из JR по индексу столбца из NC
+        {
+            int temp = -2;
+           
 
             return temp;
         }
 
-        public int getIndexColumn(int indexRow) // возвращает индекс столбца по индексу строки
+        public int getIndexColumn(int indexRow) // возвращает номер столбца из JC по индексу строки из NR
         {
             int temp = -2;
+
+           
+            return temp;
+        }
+
+        //public int GetelementAN(int indexI, int indexJ)
+        //{
+            
+        //}
+
+        public void HardPrint()
+        {
+            string temp = "{0, 5}";
+
+            int[,] locArray = new int[JR.Length, JC.Length];
+
+            int h = getIndexRow(0);
+            h = getIndexColumn(0);
+
+
+            Console.Write("\n");
             for (int i = 0; i < JR.Length; i++)
             {
-                if (temp <= 0)
+                for(int j = 0; j < JC.Length; j++)
                 {
-                    for (int j = 0; j < JR.Length; j++)
-                    {
-                        if (JR[j] == indexRow)
-                        {
-                            temp = j;
-                            break;
-                        }
-                    }
-                    indexRow = NR[indexRow];
+                    Console.Write(temp, locArray[i, j]);
                 }
-                else
-                {
-                    break;
-                }
+                Console.Write("\n");
             }
 
-            return temp;
         }
 
         public void Print()

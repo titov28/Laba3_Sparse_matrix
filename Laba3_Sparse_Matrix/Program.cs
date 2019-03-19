@@ -22,6 +22,10 @@ namespace Laba3_SparseMatrix
             RingRM_CP ringRM = new RingRM_CP(testArr);
             ringRM.Print();
 
+            //ringRM.getIndexColumn(0);
+            //ringRM.getIndexRow(9);
+
+            ringRM.HardPrint();
             Console.ReadLine();
 
         }
