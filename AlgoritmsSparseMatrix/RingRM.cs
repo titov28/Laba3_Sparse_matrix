@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AlgoritmsSparseMatrix
 {
-    public class RingRM_CP
+    public class RingRM
     {
         public int[] AN;
         public int[] NR;
@@ -15,7 +15,7 @@ namespace AlgoritmsSparseMatrix
         public int[] JR;
         public int[] JC;
 
-        public RingRM_CP()
+        public RingRM()
         {
             AN = null;
             NR = null;
@@ -25,7 +25,7 @@ namespace AlgoritmsSparseMatrix
             JC = null;
         }
 
-        public RingRM_CP(int[,] arr)
+        public RingRM(int[,] arr)
         {
 
             //подсчет количества ненулевых элементов в исходном массиве
@@ -137,9 +137,9 @@ namespace AlgoritmsSparseMatrix
 
         }
 
-        public RingRM_CP Multiplication(RingRM_CP ring)
+        public RingRM Multiplication(RingRM ring)
         {
-            RingRM_CP temp = new RingRM_CP();
+            RingRM temp = new RingRM();
 
             // проверка условия для перемножения матриц
             if (this.JC.Length != ring.JR.Length)

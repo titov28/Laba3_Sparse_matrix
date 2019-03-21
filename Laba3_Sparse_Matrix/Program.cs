@@ -20,8 +20,8 @@ namespace Laba3_SparseMatrix
                                          {40, 14, 0  , 0 ,  0, 0}};
 
 
-            RingRM_CP ringRM = new RingRM_CP(testArr);
-            RingRM_CP ringRm2 = new RingRM_CP(testArr);
+            RingRM ringRM = new RingRM(testArr);
+            RingRM ringRm2 = new RingRM(testArr);
 
             StdMatrixMultiplication std = new StdMatrixMultiplication();
 
@@ -30,7 +30,7 @@ namespace Laba3_SparseMatrix
 
             ringRM.Print();
 
-            RingRM_CP ring = ringRM.Multiplication(ringRm2);
+            RingRM ring = ringRM.Multiplication(ringRm2);
 
             Console.WriteLine("Резудьтат упакованной матрицы");
             ring.Print();
