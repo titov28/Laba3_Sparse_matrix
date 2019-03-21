@@ -8,14 +8,22 @@ namespace AlgoritmsSparseMatrix
 {
     public class RingRM
     {
-        int[] AN;
-        int[] NR;
-        int[] NC;
+        public int[] AN;
+        public int[] NR;
+        public int[] NC;
 
-        int[] JR;
-        int[] JC;
+        public int[] JR;
+        public int[] JC;
 
-        int[,] indexArr;
+        public RingRM()
+        {
+            AN = null;
+            NR = null;
+            NC = null;
+
+            JR = null;
+            JC = null;
+        }
 
         public RingRM(int[,] arr)
         {
@@ -41,43 +49,34 @@ namespace AlgoritmsSparseMatrix
             JR = new int[arr.GetUpperBound(0) + 1];
             JC = new int[arr.GetUpperBound(1) + 1];
 
-            //копирование маасива Arr 
 
-            InitIndexArr(arr);
+            for (int i = 0; i < JR.Length; i++)
+            {
+                JR[i] = -1;
+            }
+
+            for (int i = 0; i < JC.Length; i++)
+            {
+                JC[i] = -1;
+            }
 
             //инициализация массива AN
-            InitAN(arr);
-
-            //инициализация массива NR
-            InitNR();
-
-            //инициализация массива NC
-            InitNC();
-
-            //инициализация массива JR
-            InitJR();
-
-            //инициализация массива JC
-            InitJC();
-
-            // осовобождение маассива 
-            indexArr = null;
+            Init(arr);
 
         }
 
-        private void InitIndexArr(int[,] arr)
+
+        private void Init(int[,] arr)
         {
-            int counter = 0; // счетчик элементов
+            int counter = 0; // счетчик
+            bool firstItemFlag = true; // флаг первого входа
+            int preElement = 0; // предыдущий индекс в строке
 
-            indexArr = new int[arr.GetUpperBound(0) + 1, arr.GetUpperBound(1) + 1];
+            int[] preElementJC = new int[JC.Length];// Индексы предыдущих элементов в столбцах
 
-            for (int i = 0; i < arr.GetUpperBound(0) + 1; i++)
+            for (int i = 0; i < JC.Length; i++)
             {
-                for (int j = 0; j < arr.GetUpperBound(1) + 1; j++)
-                {
-                    // копируем массив
-                    indexArr[i, j] = arr[i, j];
-                }
+                preElementJC[i] = -1;
             }
 
 
@@ -87,164 +86,278 @@ namespace AlgoritmsSparseMatrix
                 {
                     if (arr[i, j] != 0)
                     {
-                        // находим ненулевые элементы и заменяем их индексами из AN
-                        indexArr[i, j] = counter++;
+                        AN[counter] = arr[i, j]; //инициализация массива AN
+                        preElement = counter;
+
+
+                        if (firstItemFlag)
+                        {
+                            JR[i] = counter; // инициализация массива JR
+
+                            firstItemFlag = false;
+                        }
+                        else
+                        {
+                            NR[counter - 1] = preElement; //инициализация массива NR
+                        }
+
+                        if (!firstItemFlag && JC[j] == -1) // инициализация массива JC
+                        {
+                            JC[j] = counter;
+                        }
+
+                        if (preElementJC[j] != -1)
+                        {
+                            NC[preElementJC[j]] = counter;//инициализация массива NC
+                        }
+
+                        preElementJC[j] = counter;
+
+
+                        counter++;
+                    }
+                }
+
+                if (firstItemFlag)// когда в строке не было элементов
+                {
+                    NR[counter - 1] = preElement;// запись индексов первых элементов стоки в последние
+                }
+                else
+                {
+                    NR[counter - 1] = JR[i]; // запись индексов первых элементов строки в последние
+                }
+                firstItemFlag = true;
+            }
+
+            for (int i = 0; i < JC.Length; i++)// запись индексов первых элементов столбца в последние 
+            {
+                if(preElementJC[i] >= 0)
+                    NC[preElementJC[i]] = JC[i];
+            }
+
+        }
+
+        public RingRM Multiplication(RingRM ring)
+        {
+            RingRM temp = new RingRM();
+
+            // проверка условия для перемножения матриц
+            if (this.JC.Length != ring.JR.Length)
+            {
+                throw new Exception();
+            }
+
+            bool firstInputJR = true;
+            bool firstInputJC = true;
+            int indexNR = -1; // индекс строки
+            int indexNC = -1; // индекс столбца
+
+            List<int> listAN = new List<int>(); //вектор AN
+            List<int> listNR = new List<int>(); //вектор NR
+            List<int> listNC = new List<int>(); //вектор NC
+
+            int[] locJR = new int[this.JR.Length]; //вектор JR
+            int[] locJC = new int[ring.JC.Length]; //вектор JC
+            int[] prelocJC = new int[ring.JC.Length]; //предыдущие элементы в столбце
+
+            for (int i = 0; i < locJC.Length; i++)
+            {
+                locJC[i] = -1;
+                prelocJC[i] = -1;
+            }
+
+            int buf = 0;
+            for (int i = 0; i < this.JR.Length; i++)// цикл перерохода на новую строку
+            {
+                firstInputJR = true;
+
+                for (int j = 0; j < ring.JC.Length; j++)// цикл перехода на новый столбец в ring
+                {
+                    if (this.JR[i] != -1) // если попалась строка -1 , то continue
+                    {
+                        indexNR = this.JR[i]; // начало выббраной строки
                     }
                     else
-                    { // все нули заменяем на -1, т.к в AN есть индекс равный нулю
-                        indexArr[i, j] = -1;
+                    {
+                        continue;
                     }
 
-                }
-            }
-        }
-
-        private void InitAN(int[,] arr)
-        {
-            int counter = 0;
-
-            for (int i = 0; i < arr.GetUpperBound(0) + 1; i++)
-            {
-                for (int j = 0; j < arr.GetUpperBound(1) + 1; j++)
-                {
-                    if (arr[i, j] != 0)
+                    for (int k = 0; k < this.JR.Length; k++)// цикл прохода по выбраной строке
                     {
-                        AN[counter++] = arr[i, j];
-                    }
-                }
-            }
-        }
-
-        private void InitNR()
-        {
-            int temp = -1; // индекс первого лемента в строке
-            int preElement = 0; // индекс предыдущего элемента
-
-            for (int i = 0; i < indexArr.GetUpperBound(0) + 1; i++)
-            {
-                for (int j = 0; j < indexArr.GetUpperBound(1) + 1; j++)
-                {
-                    if (indexArr[i, j] >= 0)// найден элеент
-                    {
-
-                        if (temp >= 0)// присваиваем предыдущему элементу индекс следующего
+                        if (ring.JC[j] != -1)// если попалася столбец -1 , то continue
                         {
-                            NR[preElement] = indexArr[i, j];
-                            preElement = indexArr[i, j];
+                            indexNC = ring.JC[j]; //начало выбраного столбца
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        for (int m = 0; m < ring.JC.Length; m++)// цикл прохода по выбраному стобцу в ring
+                        {
+                            if (getIndexColumn(indexNR) == ring.getIndexRow(indexNC)) //проерка индекса строки и стобца
+                            {
+                                buf += this.AN[indexNR] * ring.AN[indexNC];
+                            }
+
+                            indexNC = ring.NC[indexNC]; // следующий индекс столбца
+
+
+                            if (indexNC == ring.JC[j]) //если прошли круг - выход
+                            {
+                                break;
+                            }
+
                         }
 
-                        if (temp == -1) // сохранение индекса первого элемнта в строке
+                        indexNR = this.NR[indexNR]; // следующий индекс строки
+
+                        if(indexNR == this.JR[i])//если прошли круг - выход
                         {
-                            temp = indexArr[i, j];
-                            preElement = temp;
+                            break;
                         }
                     }
+
+                    if (buf != 0)
+                    {
+                        listAN.Add(buf);// заполнение AN
+                        listNC.Add(-1);
+
+                        if (firstInputJR)
+                        {
+                            locJR[i] = listAN.Count - 1;  //Заполняем JR
+                            firstInputJR = false;
+                        }
+                        else
+                        {
+                            listNR.Add(listAN.Count - 1);//Заполняем NR
+                        }
+
+                        if (locJC[j] == -1)
+                        {
+                            locJC[j] = listAN.Count - 1; // заполняем JC
+                        }
+
+                        if (prelocJC[j] != -1)
+                        {
+                            listNC[prelocJC[j]] = listAN.Count - 1; // заполняем NC
+                        }
+
+                        prelocJC[j] = listAN.Count - 1;
+
+                        buf = 0;
+                    }
+
+
                 }
 
-                if (temp >= 0)// если элементов в строке больше одного
+                if (firstInputJR)
                 {
-                    NR[preElement] = temp;
+                    locJR[i] = -1; // если нет элемнтов строке
                 }
-                else // если элемент в строке один
+                else
                 {
-                    NR[preElement] = preElement;
+                    listNR.Add(locJR[i]); // если есть , то в конец NR добавляю первый элемент строки
                 }
-
-                temp = -1;
             }
+
+            for (int i = 0; i < locJC.Length; i++)
+            {
+                if(locJC[i] >= 0)
+                    listNC[prelocJC[i]] = locJC[i];
+            }
+
+            //заполняем локальнный объект
+            temp.AN = listAN.ToArray();
+            temp.NR = listNR.ToArray();
+            temp.NC = listNC.ToArray();
+
+            temp.JR = locJR;
+            temp.JC = locJC;
+
+            return temp;
 
         }
 
-        private void InitNC()
+        public int getIndexRow(int indexColumn)// возвращает номер строки из JR по индексу столбца из NC
         {
-            int temp = -1; // индекс первого элемента в столбце
-            int preElement = 0; // индекс предыдущего элемента
-
+            int temp = -2;
            
-            for (int i = 0; i < indexArr.GetUpperBound(1) + 1; i++)
+            while(temp == -2)
             {
-                for (int j = 0; j < indexArr.GetUpperBound(0) + 1; j++)
+                for(int i = 0; i < JR.Length; i++)
                 {
-                    if (indexArr[j, i] >= 0)// нашли элемент в столбце 
+                    if(JR[i] == indexColumn)
                     {
-                        if(temp >= 0)
-                        {
-                            NC[preElement] = indexArr[j, i];
-                            preElement = indexArr[j, i];
-                        }
-
-                        if(temp < 0) // сохранение индекса первого элемента в столбце 
-                        {
-                            temp = indexArr[j, i];
-                            preElement = temp; // первый элемент стал предыдущим
-                        }
-
-                    }
-                }
-
-                if (temp >= 0) { // если элементов в столбце больше одного
-                    NC[preElement] = temp;
-                }
-                else // если элемент в столбце один
-                {
-                    NC[preElement] = preElement;
-                }
-
-                temp = -1;
-
-            }
-
-        }
-
-        private void InitJR()
-        {
-            int counter = 0;
-            for (int i = 0; i < indexArr.GetUpperBound(0) + 1; i++)
-            {
-                for (int j = 0; j < indexArr.GetUpperBound(1) + 1; j++)
-                {
-                    if (indexArr[i, j] >= 0)// найден элеент
-                    {
-                        JR[counter++] = indexArr[i, j];
-                        break; 
-                    }
-
-                    if(j == indexArr.GetUpperBound(1))
-                    {
-                        JR[counter++] = -1;
-                    }
-
-                }
-
-                
-            }
-        }
-
-        private void InitJC()
-        {
-            int counter = 0;
-            for (int i = 0; i < indexArr.GetUpperBound(1) + 1; i++)
-            {
-                for (int j = 0; j < indexArr.GetUpperBound(0) + 1; j++)
-                {
-                    if (indexArr[j, i] >= 0)// найден элеент
-                    {
-                        JC[counter++] = indexArr[j, i];
+                        temp = i;
                         break;
                     }
                 }
+               
+                indexColumn = NR[indexColumn];
             }
+
+            return temp;
         }
 
+        public int getIndexColumn(int indexRow) // возвращает номер столбца из JC по индексу строки из NR
+        {
+            int temp = -2;
+
+            while (temp == -2)
+            {
+                for (int i = 0; i < JC.Length; i++)
+                {
+                    if (JC[i] == indexRow)
+                    {
+                        temp = i;
+                        break;
+                    }
+                }
+                indexRow = NC[indexRow];
+            }
+            return temp;
+        }
+
+        //public int GetelementAN(int indexI, int indexJ)
+        //{
+            
+        //}
+
+        public void HardPrint()
+        {
+            string temp = "{0, 8}";
+
+            int[,] locArray = new int[JR.Length, JC.Length];
+
+            for(int i = 0; i < AN.Length; i++)
+            {
+                locArray[getIndexRow(i), getIndexColumn(i)] = AN[i];
+            }
+
+
+            Console.Write("\n");
+            for (int i = 0; i < JR.Length; i++)
+            {
+                for(int j = 0; j < JC.Length; j++)
+                {
+                    Console.Write(temp, locArray[i, j]);
+                }
+                Console.Write("\n");
+            }
+
+            Console.Write("\n");
+        }
 
         public void Print()
         {
+            string temp = "{0, 5}";
+
             Console.Write("\n");
             //вывод в консоль массива AN
             Console.Write("AN: ");
-            for(int i = 0; i < AN.Length; i++)
+            for (int i = 0; i < AN.Length; i++)
             {
-                Console.Write("{0} ", AN[i]);
+                Console.Write(temp, AN[i]);
             }
             Console.Write("\n");
 
@@ -252,7 +365,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("NR: ");
             for (int i = 0; i < NR.Length; i++)
             {
-                Console.Write("{0} ", NR[i]);
+                Console.Write(temp, NR[i]);
             }
             Console.Write("\n");
 
@@ -260,7 +373,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("NC: ");
             for (int i = 0; i < NC.Length; i++)
             {
-                Console.Write("{0} ", NC[i]);
+                Console.Write(temp, NC[i]);
             }
             Console.Write("\n");
 
@@ -268,7 +381,7 @@ namespace AlgoritmsSparseMatrix
             Console.Write("JR: ");
             for (int i = 0; i < JR.Length; i++)
             {
-                Console.Write("{0} ", JR[i]);
+                Console.Write(temp, JR[i]);
             }
             Console.Write("\n");
 
@@ -276,8 +389,9 @@ namespace AlgoritmsSparseMatrix
             Console.Write("JC: ");
             for (int i = 0; i < JC.Length; i++)
             {
-                Console.Write("{0} ", JC[i]);
+                Console.Write(temp, JC[i]);
             }
+            Console.Write("\n");
             Console.Write("\n");
         }
     }

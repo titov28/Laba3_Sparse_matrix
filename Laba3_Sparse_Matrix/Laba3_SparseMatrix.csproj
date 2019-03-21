@@ -49,6 +49,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Laba2_Matrix_mult\MatrixMultiplicationAlgorithms\MatrixMultiplicationAlgorithms.csproj">
+      <Project>{e96f7c04-932c-41ba-9666-a295d5af51ee}</Project>
+      <Name>MatrixMultiplicationAlgorithms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlgoritmsSparseMatrix\AlgoritmsSparseMatrix.csproj">
       <Project>{754afb2c-abe2-48f2-a297-e7a481d9c15c}</Project>
       <Name>AlgoritmsSparseMatrix</Name>
