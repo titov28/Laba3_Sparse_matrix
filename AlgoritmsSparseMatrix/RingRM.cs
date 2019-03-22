@@ -148,7 +148,6 @@ namespace AlgoritmsSparseMatrix
             }
 
             bool firstInputJR = true;
-            bool firstInputJC = true;
             int indexNR = -1; // индекс строки
             int indexNC = -1; // индекс столбца
 
@@ -318,10 +317,78 @@ namespace AlgoritmsSparseMatrix
             return temp;
         }
 
-        //public int GetelementAN(int indexI, int indexJ)
-        //{
+        public RingRM Addition(RingRM ring)
+        {
+            RingRM temp = new RingRM();
+
+            if ((this.JC.Length != ring.JC.Length) & (this.JR.Length != ring.JR.Length))
+            {
+                throw new Exception();
+            }
+
+            bool firstInputJR = true;
+            int indexNR = -1; // индекс строки
+            int indexNC = -1; // индекс столбца
+
+            List<int> listAN = new List<int>(); //вектор AN
+            List<int> listNR = new List<int>(); //вектор NR
+            List<int> listNC = new List<int>(); //вектор NC
+
+            int[] locJR = new int[this.JR.Length]; //вектор JR
+            int[] locJC = new int[ring.JC.Length]; //вектор JC
+            int[] prelocJC = new int[ring.JC.Length]; //предыдущие элементы в столбце
+
+            for (int i = 0; i < locJC.Length; i++)
+            {
+                locJC[i] = -1;
+                prelocJC[i] = -1;
+            }
+
+            int count = 0;
+
+            while(this.AN.Length > count || ring.AN.Length > count)
+            {
+                if()
+
+                count++;
+            }
             
-        //}
+
+        }
+
+        public bool  IsThereAnIndexRow(int i)
+        {
+            bool flag = false;
+
+            for(int k = 0; k < AN.Length; k++)
+            {
+                if(i == getIndexRow(k))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+        public bool IsThereAnIndexColumn(int i)
+        {
+            bool flag = false;
+
+            for (int k = 0; k < AN.Length; k++)
+            {
+                if (i == getIndexColumn(k))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+
 
         public void HardPrint()
         {
