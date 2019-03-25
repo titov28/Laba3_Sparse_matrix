@@ -19,28 +19,27 @@ namespace Laba3_SparseMatrix
                                          {0 , 0 , 0  , 0 ,  0, 0},
                                          {40, 14, 0  , 0 ,  0, 0}};
 
+            int[,] testArr2 = new int[,] {{0 , 10, 0  , 20,  0, 0},
+                                          {0 , 11, 100, 0 , 12, 0},
+                                          {30, 0 , 0  , 0 , 13, 0},
+                                          {0 , 0 , 0  , 15,  0, 0},
+                                          {0 , 0 , 1  , 0 ,  0, 0},
+                                          {40, 14, 0  , 0 ,  0, 0}};
+
 
             RingRM ringRM = new RingRM(testArr);
-            RingRM ringRm2 = new RingRM(testArr);
+            RingRM ringRm2 = new RingRM(testArr2);
 
-            StdMatrixMultiplication std = new StdMatrixMultiplication();
-
-            std.SetMatrix(testArr, testArr);
-            std.Calculation();
-
+            
             ringRM.Print();
 
-            RingRM ring = ringRM.Multiplication(ringRm2);
+            //RingRM ring = ringRM.Multiplication(ringRm2);
+
+            RingRM ring = ringRM.Addition(ringRm2);
 
             Console.WriteLine("Резудьтат упакованной матрицы");
             ring.Print();
             ring.HardPrint();
-
-
-
-            Console.WriteLine("Резудьтат стд. матрицы");
-            std.Print();
-            
 
 
             Console.ReadLine();
