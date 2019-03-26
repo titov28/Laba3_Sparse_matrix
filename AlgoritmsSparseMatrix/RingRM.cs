@@ -344,52 +344,89 @@ namespace AlgoritmsSparseMatrix
                 prelocJC[i] = -1;
             }
 
-
             for (int i = 0; i < this.JR.Length; i++)
             {
+                int[] temporaryArray = new int[this.JC.Length];
+
+
                 indexNRThis = this.JR[i];
                 indexNRRing = ring.JR[i];
 
                 firstInputJR = true;
 
-                for (int j = 0; j < this.JC.Length; j++)
+                // заполняем массив temporaryArray значениями из строк двух массивов. и для значений сохрянем индекс столбца
+                if (this.JR[i] != -1)
                 {
-
-
-                    if (firstInputJR)
+                    for (int j = 0; j < this.JC.Length; j++)
                     {
-                        locJR[i] = listAN.Count - 1;  //Заполняем JR
-                        firstInputJR = false;
-                    }
-                    else
-                    {
-                        listNR.Add(listAN.Count - 1);//Заполняем NR
-                    }
+                        int locColumnIndex = this.getIndexColumn(indexNRThis);
+                        temporaryArray[locColumnIndex] += this.AN[indexNRThis];
+
+                        indexNRThis = this.NR[indexNRThis];
 
 
-                    if (locJC[j] == -1)
-                    {
-                        locJC[j] = listAN.Count - 1; // заполняем JC
+                        if(indexNRThis == this.JR[i])
+                        {
+                            break;
+                        }
+
                     }
 
-                    if (prelocJC[j] != -1)
+                }
+
+                if (ring.JR[i] != -1)
+                {
+                    for (int j = 0; j < ring.JC.Length; j++)
                     {
-                        listNC[prelocJC[j]] = listAN.Count - 1; // заполняем NC
+                        int locColumnIndex = ring.getIndexColumn(indexNRRing);
+                        temporaryArray[locColumnIndex] += ring.AN[indexNRRing];
+
+                        indexNRRing = ring.NR[indexNRRing];
+
+
+                        if (indexNRRing == ring.JR[i])
+                        {
+                            break;
+                        }
+
                     }
-
-                    prelocJC[j] = listAN.Count - 1;
-
-                    if (indexNRThis == this.JR[i] | indexNRRing == ring.JR[i])//если прошли круг - выход
-                    {
-                        break;
-                    }
-
 
                 }
 
 
+                for(int j = 0; j < this.JC.Length; j++)
+                {
+                    if (temporaryArray[j] != 0)
+                    {
+
+                        listAN.Add(temporaryArray[j]);
+                        listNC.Add(-1);
+
+                        if (firstInputJR)
+                        {
+                            locJR[i] = listAN.Count - 1;  //Заполняем JR
+                            firstInputJR = false;
+                        }
+                        else
+                        {
+                            listNR.Add(listAN.Count - 1);//Заполняем NR
+                        }
 
 
+                        if (locJC[j] == -1)
+                        {
+                            locJC[j] = listAN.Count - 1; // заполняем JC
+                        }
+
+                        if (prelocJC[j] != -1)
+                        {
+                            listNC[prelocJC[j]] = listAN.Count - 1; // заполняем NC
+                        }
+
+                        prelocJC[j] = listAN.Count - 1;
+                    }
+                    
+                }
 
                 if (firstInputJR)
                 {
@@ -418,39 +455,6 @@ namespace AlgoritmsSparseMatrix
             return temp;
         
         }
-
-        public bool IsThereAnIndexRow(int i)
-        {
-            bool flag = false;
-
-            for (int k = 0; k < AN.Length; k++)
-            {
-                if (i == getIndexRow(k))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-
-            return flag;
-        }
-
-        public bool IsThereAnIndexColumn(int i)
-        {
-            bool flag = false;
-
-            for (int k = 0; k < AN.Length; k++)
-            {
-                if (i == getIndexColumn(k))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-
-            return flag;
-        }
-
 
 
         public void HardPrint()
