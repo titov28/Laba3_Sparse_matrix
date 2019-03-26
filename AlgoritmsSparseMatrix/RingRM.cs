@@ -321,7 +321,7 @@ namespace AlgoritmsSparseMatrix
         {
             RingRM temp = new RingRM();
 
-            if ((this.JC.Length != ring.JC.Length) & (this.JR.Length != ring.JR.Length))
+            if ((this.JC.Length != ring.JC.Length) | (this.JR.Length != ring.JR.Length))
             {
                 throw new Exception();
             }
