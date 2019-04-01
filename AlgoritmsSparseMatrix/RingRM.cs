@@ -165,6 +165,9 @@ namespace AlgoritmsSparseMatrix
                 prelocJC[i] = -1;
             }
 
+            //Для отладки
+            //int COUNTER = 0;
+
             int buf = 0;
             for (int i = 0; i < this.JR.Length; i++)// цикл перерохода на новую строку
             {
@@ -257,6 +260,10 @@ namespace AlgoritmsSparseMatrix
                 {
                     listNR.Add(locJR[i]); // если есть , то в конец NR добавляю первый элемент строки
                 }
+
+               //Для отладки
+               // Console.Write("{0} ", ++COUNTER);
+
             }
 
             for (int i = 0; i < locJC.Length; i++)
